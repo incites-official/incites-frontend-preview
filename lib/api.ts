@@ -1,6 +1,8 @@
 import type { ApiErrorBody, TokenResponse } from "@/lib/types";
+import { DemoApiError, handleDemoDownload, handleDemoRequest } from "@/lib/demo-api";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
+export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
 const ACCESS_TOKEN_KEY = "incites_access_token";
 const AUTH_SYNC_KEY = "incites_auth_sync";
 
@@ -135,6 +137,14 @@ export async function apiFetch<T>(
   init: RequestInit = {},
   options: ApiFetchOptions = {},
 ): Promise<T> {
+  if (DEMO_MODE) {
+    try {
+      return await handleDemoRequest<T>(path, init, getAccessToken());
+    } catch (reason) {
+      if (reason instanceof DemoApiError) throw new ApiError(reason.status, reason.code, reason.message);
+      throw reason;
+    }
+  }
   const retryAuthentication = options.retryAuthentication ?? true;
   const redirectUnauthorized = options.redirectUnauthorized ?? true;
   const redirectForbidden = options.redirectForbidden ?? true;
@@ -207,6 +217,7 @@ export async function apiFetch<T>(
 }
 
 export async function apiDownload(path: string): Promise<Blob> {
+  if (DEMO_MODE) return handleDemoDownload(path);
   const request = async (token: string | null) => {
     const headers = new Headers({ Accept: "application/octet-stream" });
     if (token) headers.set("Authorization", `Bearer ${token}`);
