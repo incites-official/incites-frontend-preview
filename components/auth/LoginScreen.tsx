@@ -4,9 +4,8 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { showToast } from "@/components/feedback/Toast";
 import { Icon } from "@/components/Icon";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { InlineMessage, SoftButton, SoftInput } from "@/components/soft/Soft";
+import { SoftButton, SoftInput } from "@/components/soft/Soft";
 import { ApiError } from "@/lib/api";
-import { DEMO_PASSWORD, demoAccountGroups, type DemoAccount } from "@/lib/demo-data";
 import { homePathForRole } from "@/lib/navigation";
 import type { Role } from "@/lib/types";
 import { useRouter } from "next/navigation";
@@ -19,7 +18,6 @@ export function LoginScreen({ audience }: { audience: "system" | "mobile" }) {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [rememberId, setRememberId] = useState(false);
-  const [accountNotice, setAccountNotice] = useState<string | null>(null);
   const isMobileAudience = audience === "mobile";
 
   useEffect(() => {
@@ -40,17 +38,12 @@ export function LoginScreen({ audience }: { audience: "system" | "mobile" }) {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    await authenticate(email.trim(), password);
-  }
-
-  async function authenticate(loginEmail: string, loginPassword: string) {
     setSubmitting(true);
-    setAccountNotice(null);
     try {
       const allowedRoles: Role[] = isMobileAudience ? ["PARENT", "STUDENT"] : ["ADMIN", "OPERATOR"];
-      const profile = await login(loginEmail, loginPassword, allowedRoles);
+      const profile = await login(email.trim(), password, allowedRoles);
       window.localStorage.removeItem("incites.saved-login-id");
-      if (rememberId) window.localStorage.setItem("incites.saved-login-email", loginEmail);
+      if (rememberId) window.localStorage.setItem("incites.saved-login-email", email.trim());
       else window.localStorage.removeItem("incites.saved-login-email");
       router.replace(homePathForRole(profile.role));
     } catch (requestError) {
@@ -59,16 +52,6 @@ export function LoginScreen({ audience }: { audience: "system" | "mobile" }) {
       setSubmitting(false);
     }
   }
-
-  async function loginWithDemoAccount(account: DemoAccount) {
-    setEmail(account.email);
-    setPassword(account.password);
-    await authenticate(account.email, account.password);
-  }
-
-  const visibleDemoGroups = demoAccountGroups.filter((group) => isMobileAudience
-    ? group.id === "STUDENT" || group.id === "PARENT"
-    : group.id === "ADMIN" || group.id === "TEACHER");
 
   return (
     <main className={`login-page ${isMobileAudience ? "mobile-login-page" : "system-login-page"}`}>
@@ -89,35 +72,11 @@ export function LoginScreen({ audience }: { audience: "system" | "mobile" }) {
             <h2>{isMobileAudience ? <><strong>INCITES</strong>에 로그인하세요</> : <><strong>INCITES</strong> 관리자 로그인</>}</h2>
             <p>{isMobileAudience ? "관찰 기록과 성장 리포트를 한곳에서 관리하세요." : "운영 관리 시스템에 접속하세요."}</p>
           </div>
-          <section className="demo-account-picker" aria-label="데모 계정 빠른 로그인">
-            <div className="demo-account-heading">
-              <span>DEMO</span>
-              <p>확인할 계정을 선택하면 바로 로그인됩니다.</p>
-              <small>공통 비밀번호 {DEMO_PASSWORD}</small>
-            </div>
-            <div className="demo-account-groups">
-              {visibleDemoGroups.map((group) => (
-                <div className="demo-account-group" key={group.id}>
-                  <strong>{group.label}</strong>
-                  <div>
-                    {group.accounts.map((account, index) => (
-                      <button type="button" disabled={submitting} onClick={() => void loginWithDemoAccount(account)} key={account.id}>
-                        <span>{index + 1}</span>
-                        <b>{account.name}</b>
-                        <small>{account.email}</small>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
           <div className="login-fields">
             <SoftInput label="이메일" hideLabel type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="username" placeholder="이메일" autoFocus required />
             <SoftInput label="비밀번호" hideLabel type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" placeholder="비밀번호" required />
           </div>
           <label className="remember-login"><input type="checkbox" checked={rememberId} onChange={(event) => setRememberId(event.target.checked)} /><span className="remember-desktop-label">이메일 저장</span><span className="remember-mobile-label">자동 로그인</span></label>
-          {accountNotice && <InlineMessage tone="info"><Icon name="info" />{accountNotice}</InlineMessage>}
           <SoftButton className="login-submit" type="submit" disabled={submitting || !email.trim() || !password}>{submitting ? <><span className="button-spinner" />로그인 중</> : "로그인"}</SoftButton>
           <div className="login-mobile-actions">
             <nav className="login-account-links" aria-label="계정 도움말">
