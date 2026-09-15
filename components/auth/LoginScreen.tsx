@@ -12,25 +12,6 @@ import type { Role } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
-function GoogleLogo() {
-  return (
-    <svg className="login-provider-icon google" viewBox="0 0 18 18" aria-hidden="true">
-      <path fill="#4285F4" d="M17.64 9.205c0-.638-.057-1.252-.164-1.841H9v3.482h4.844a4.14 4.14 0 0 1-1.797 2.716v2.259h2.909c1.702-1.567 2.684-3.875 2.684-6.616Z" />
-      <path fill="#34A853" d="M9 18c2.43 0 4.468-.806 5.956-2.179l-2.909-2.259c-.806.54-1.835.859-3.047.859-2.344 0-4.328-1.585-5.037-3.714H.956v2.332A8.999 8.999 0 0 0 9 18Z" />
-      <path fill="#FBBC05" d="M3.963 10.707A5.41 5.41 0 0 1 3.682 9c0-.592.102-1.168.281-1.707V4.961H.956A8.996 8.996 0 0 0 0 9c0 1.452.347 2.827.956 4.039l3.007-2.332Z" />
-      <path fill="#EA4335" d="M9 3.579c1.321 0 2.507.454 3.441 1.346l2.581-2.582C13.464.891 11.426 0 9 0A8.999 8.999 0 0 0 .956 4.961l3.007 2.332C4.672 5.164 6.656 3.579 9 3.579Z" />
-    </svg>
-  );
-}
-
-function KakaoLogo() {
-  return (
-    <svg className="login-provider-icon kakao" viewBox="0 0 24 22" aria-hidden="true">
-      <path fill="currentColor" d="M12 1C5.925 1 1 4.807 1 9.504c0 2.922 1.9 5.5 4.788 7.032l-1.215 4.46a.45.45 0 0 0 .69.49l5.34-3.532c.458.043.924.065 1.397.065 6.075 0 11-3.807 11-8.515C23 4.807 18.075 1 12 1Z" />
-    </svg>
-  );
-}
-
 export function LoginScreen({ audience }: { audience: "system" | "mobile" }) {
   const { user, initialized, login } = useAuth();
   const router = useRouter();
@@ -144,11 +125,7 @@ export function LoginScreen({ audience }: { audience: "system" | "mobile" }) {
               <button type="button" onClick={() => router.push("/reset-password")}>비밀번호 재설정</button><i aria-hidden="true" />
               <button type="button" onClick={() => router.push("/signup")}>회원가입</button>
             </nav>
-            <div className="login-divider"><span>OR</span></div>
-            <div className="login-provider-buttons">
-              <button type="button" className="login-provider-button google" onClick={() => setAccountNotice("Google 로그인은 현재 지원하지 않습니다. 가입한 이메일로 로그인해주세요.")}><GoogleLogo />Google로 로그인</button>
-              <button type="button" className="login-provider-button kakao" onClick={() => setAccountNotice("카카오 로그인은 현재 지원하지 않습니다. 가입한 이메일로 로그인해주세요.")}><KakaoLogo />카카오로 로그인</button>
-            </div>
+            <div className="login-provider-placeholder" aria-hidden="true" />
           </div>
           <p className="login-help"><Icon name="shield" />로그인에 연속 실패하면 계정이 일정 시간 잠깁니다.</p>
         </form>

@@ -2054,6 +2054,7 @@ body:has(.report-review-page) .app-toast { min-height: 80px; padding: 18px 28px;
   .mobile-login-page .login-provider-button.kakao { width: 358px; margin-left: -.5px; background: #ffea2f; border-color: #ffea2f; }
   .mobile-login-page .login-provider-icon { width: 18px; height: 18px; }
   .mobile-login-page .login-provider-icon.kakao { width: 21px; height: 19px; }
+  .mobile-login-page .login-provider-placeholder { height: 204px; }
   .mobile-login-page .login-help { display: none; }
 }
 
