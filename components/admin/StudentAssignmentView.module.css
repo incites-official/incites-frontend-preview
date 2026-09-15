@@ -1,0 +1,38 @@
+.toolbar.toolbar { grid-template-columns: minmax(200px, 1fr) auto; }
+.actions { display: flex; align-items: center; gap: 12px; }
+.actions > button { min-width: 130px; }
+.viewSwitch { display: inline-flex; padding: 3px; gap: 3px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f1f5f9; }
+.viewSwitch button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 5px 10px; color: #64748b; border: 0; border-radius: 7px; background: transparent; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+.viewSwitch button[aria-pressed="true"] { color: #1e293b; background: #fff; box-shadow: 0 1px 3px #0f172a15; }
+.viewSwitch button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.viewSwitch svg { width: 16px; height: 16px; }
+.tableContainer { min-height: 0; margin: 0 32px 30px; flex: 1; overflow: auto; border: 1px solid #e2e8f0; border-radius: 12px; }
+.table.table { min-width: 900px; table-layout: fixed; }
+.table.table th { position: sticky; top: 0; z-index: 1; height: 52px; font-size: 13px; font-weight: 700; }
+.table.table td { height: 66px; font-size: 13px; overflow-wrap: anywhere; }
+.table .selectionColumn { width: 48px; text-align: center; }
+.table .studentColumn { width: 20%; }
+.table .codeColumn { width: 18%; }
+.table .ageColumn { width: 12%; }
+.table .dateColumn { width: 15%; }
+.table input { width: 16px; height: 16px; vertical-align: middle; accent-color: var(--primary); cursor: pointer; }
+.table input:disabled { cursor: default; }
+.table tr[data-selected="true"] { background: #eff6ff; }
+.table tr[data-assigned="true"] { background: #f8fafc; }
+.table tr[data-selectable="true"] { cursor: pointer; }
+.studentInfo { display: flex; align-items: center; gap: 10px; }
+.studentInfo strong { color: #0f172a; }
+.confirmationToolbar { display: flex; justify-content: flex-end; margin: 16px 0 12px; }
+.confirmationTable { margin: 0; max-height: 340px; }
+.tableModal.tableModal { width: min(1060px, 100%); }
+@media (max-width: 1440px) {
+  .tableContainer { margin: 0 18px 20px; }
+  .confirmationTable { margin: 0; }
+  .table.table th { height: 44px; font-size: 12px; }
+  .table.table td { height: 56px; font-size: 12px; }
+}
+@media (max-width: 760px) {
+  .toolbar.toolbar { grid-template-columns: 1fr; }
+  .actions { justify-content: space-between; gap: 8px; }
+  .actions > button { width: auto; min-width: 110px; }
+}
